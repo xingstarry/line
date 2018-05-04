@@ -12,79 +12,121 @@
     // 基于准备好的dom，初始化echarts实例
     var myChart = echarts.init(document.getElementById('main'));
 
-    // 指定图表的配置项和数据
+    var timeData = ['0:00', '0:30',
+        '1:00', '1:30',
+        '2:00', '2:30',
+        '3:00', '3:30',
+        '4:00', '4:30',
+        '5:00', '5:30',
+        '6:00', '6:30',
+        '7:00', '7:30',
+        '8:00', '8:30',
+        '9:00', '9:30',
+        '10:00', '10:30',
+        '11:00', '11:30',
+        '12:00', '12:30',
+        '13:00', '13:30',
+        '14:00', '14:30',
+        '15:00', '15:30',
+        '16:00', '16:30',
+        '17:00', '17:30',
+        '18:00', '18:30',
+        '19:00', '19:30',
+        '20:00', '20:30',
+        '21:00', '21:30',
+        '22:00', '22:30',
+        '23:00', '23:30'
+    ];
+
     option = {
         title: {
-            text: '折线图堆叠'
+            text: '多个背景颜色图',
+            x: 'left',
         },
         tooltip: {
-            trigger: 'axis'
+            trigger: 'axis',
+
+            axisPointer: {
+                animation: false
+            }
         },
         legend: {
-            data: ['邮件营销']
-        },
-        grid: {
-            left: '3%',
-            right: '4%',
-            bottom: '3%',
-            containLabel: true
+            data: ['流量'],
+            x: 'left'
         },
         toolbox: {
             feature: {
+                dataZoom: {
+                    yAxisIndex: 'none'
+                },
+                restore: {},
                 saveAsImage: {}
             }
         },
-        xAxis: {
-            type: 'category',
-            boundaryGap: false,
-            data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日', '周二', '周三', '周四', '周五', '周六', '周日'],
-            splitLine: { //设置X轴的网格
-                show: true,
-                interval: 'auto'
-            },
-            axisLine: { //设置X轴的颜色
-                lineStyle: {
-                    color: 'blue'
-                }
+        axisPointer: {
+            link: {
+                xAxisIndex: 'all'
             }
         },
-        yAxis: {
-            type: 'value',
-            axisLine: { //设置y轴的颜色
-                lineStyle: {
-                    color: 'blue'
-                }
-            }
-        },
-
         dataZoom: [{
             type: 'inside',
-            start: 0,
-            end: 40
+            realtime: true,
+            start: 30,
+            end: 70,
+
+        }],
+        grid: [{
+            left: 40,
+            right: 40,
+        }, {
+            left: 40,
+            right: 40,
+        }],
+        xAxis: [{
+            splitLine: {
+                show: false
+            },
+
+            type: 'category',
+            boundaryGap: false,
+            axisLine: {
+                onZero: true
+            },
+            data: timeData
+        }, {
+            gridIndex: 1
+        }],
+
+        yAxis: [{
+            splitLine: {
+                show: false
+            },
+            type: 'value',
+            max: 500,
+            name: '单位:',
+            min: 100,
+            interval: 60,
+
+
+        }, {
+            gridIndex: 1
         }],
         series: [{
-            name: '邮件营销',
+            name: '数值',
             type: 'line',
-            stack: '总量',
-            smooth: true, //点与点之间的幅度,false为直线
-            // symbol: 'circle',
-            // symbolSize: 5,
-            // showSymbol: true,   //是否显示点数据的圆点
-            // itemStyle: {    //设置折线的border颜色
-            //     normal: {
-            //         color: 'rgb(0,136,212)',
-            //         borderColor: 'rgba(0,136,212,0.2)',
-            //         borderWidth: 10
-            //     }
-            // },
-            label: { //设置点数据的提示
+            smooth: true,
+            symbol: 'circle',
+            symbolSize: 9,
+            showSymbol: false,
+            splitLine: {
+                show: false
+            },
+            lineStyle: {
                 normal: {
-                    show: true,
-                    position: 'bottom'
+                    width: 1
                 }
             },
-            data: [120, 132, 101, 134, 90, 230, 210, 132, 101, 134, 90, 230, 210],
-            markPoint: { //设置最大值和最小值
+            markPoint: {
                 data: [{
                     type: 'max',
                     name: '最大值'
@@ -92,7 +134,9 @@
                     type: 'min',
                     name: '最小值'
                 }]
-            }
+            },
+
+            data: [113, 132, 123, 122, 132, 132, 123, 225, 223, 232, 223, 222, 223, 312, 223, 222, 223, 222, 232, 262, 232, 232, 223, 222, 223, 332, 223, 232, 223, 322, 123, 222, 231, 322, 233, 122, 223, 232, 232, 222, 223, 232, 232, 222, 232, 132, 123, 212]
 
         }]
     };
