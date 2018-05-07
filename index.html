@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <title>Title</title>
   <script src="js/echarts.min.js"></script>
+  <script src="js/jquery-2.2.4.min.js"></script>
 </head>
 <body>
 <!-- 为 ECharts 准备一个具备大小（宽高）的 DOM -->
@@ -37,96 +38,148 @@
         '22:00', '22:30',
         '23:00', '23:30'
     ];
-
     option = {
         title: {
             text: '多个背景颜色图',
-            x: 'left',
+            x: 'left'
         },
-        tooltip: {
+        tooltip: { // 悬浮提示框
             trigger: 'axis',
 
             axisPointer: {
-                animation: false
-            }
+                type:'line', // 指示器类型 line shadow cross
+//                animation: false
+            },
+            backgroundColor:'rgba(50,50,50,0.7)',
+            lineStyle: {
+                color: '#48b',
+                width: 2,
+                type: 'solid'
+            },
+            textStyle:{
+                color:'#fff'
+            },
+            /*formatter: function(e) { // 显示的内容
+                // return e.data.displayname;
+                return 'hello';
+            },*/
+            // position: [500, 10],
+//            triggerOn: 'click' // 点击出现tip
         },
-        legend: {
+        /*markline:{
+            data: [
+                {
+                    name: '平均线',
+                    // 支持 'average', 'min', 'max'
+                    type: 'average'
+                },
+                {
+                    name: 'Y 轴值为 100 的水平线',
+                    yAxis: 100
+                },
+                [
+                    {
+                        // 起点和终点的项会共用一个 name
+                        name: '最小值到最大值',
+                        type: 'min'
+                    },
+                    {
+                        type: 'max'
+                    }
+                ],
+            ]
+        },*/
+        /*legend: {
             data: ['流量'],
             x: 'left'
         },
-        toolbox: {
-            feature: {
-                dataZoom: {
-                    yAxisIndex: 'none'
-                },
-                restore: {},
-                saveAsImage: {}
-            }
-        },
-        axisPointer: {
-            link: {
-                xAxisIndex: 'all'
-            }
-        },
+*/
+
         dataZoom: [{
             type: 'inside',
             realtime: true,
-            start: 30,
-            end: 70,
+            start: 0,
+            end: 40,
 
         }],
-        grid: [{
+        grid: [{ // 网格
             left: 40,
             right: 40,
         }, {
             left: 40,
             right: 40,
         }],
-        xAxis: [{
+        xAxis: [{ // x轴
             splitLine: {
                 show: false
             },
 
             type: 'category',
-            boundaryGap: false,
+            boundaryGap: false, // 是否从轴线开始显示，坐标轴两边留白策略
             axisLine: {
-                onZero: true
+                onZero: true, // X 轴或者 Y 轴的轴线是否在另一个轴的 0 刻度上
+                lineStyle:{ // 轴线及字体颜色等
+                  color:'#aaa',
+                  width:1
+                }
             },
-            data: timeData
+            data: [],
         }, {
-            gridIndex: 1
+            gridIndex: 1 //x 轴所在的 grid 的索引，默认位于第一个 grid
         }],
 
-        yAxis: [{
+        yAxis: [{ // y轴
             splitLine: {
-                show: false
+                show: false,
+                color:'blue'
             },
             type: 'value',
-            max: 500,
             name: '单位:',
             min: 100,
-            interval: 60,
+            splitNumber:4,
+            nameTextStyle:{ // 坐标轴名称的颜色
+                color:'red'
+            },
+            axisLine: {
+                lineStyle:{ // 轴线及字体颜色等
+                    color:'red',
+                    width:1
+                }
+            },
 
 
         }, {
             gridIndex: 1
         }],
         series: [{
-            name: '数值',
+            name: '币值',
             type: 'line',
             smooth: true,
             symbol: 'circle',
-            symbolSize: 9,
+            symbolSize: 3,
             showSymbol: false,
             splitLine: {
                 show: false
             },
-            lineStyle: {
+            lineStyle: { // 线的样式
                 normal: {
-                    width: 1
+                    width: 1,
+                    color:'blue'
+                }
+            },
+            itemStyle : { // 图标样式
+                normal : {
+                    color:'blue'
                 }
             },
             markPoint: {
+                // 'circle', 'rect', 'roundRect', 'triangle', 'diamond', 'pin', 'arrow'
+                symbol: 'pin', // 标注点样式
+                symbolSize: 40,
+                label:{
+                    color:'#fff',
+                },
+                silent:'true',
                 data: [{
                     type: 'max',
                     name: '最大值'
@@ -135,14 +188,86 @@
                     name: '最小值'
                 }]
             },
-
-            data: [113, 132, 123, 122, 132, 132, 123, 225, 223, 232, 223, 222, 223, 312, 223, 222, 223, 222, 232, 262, 232, 232, 223, 222, 223, 332, 223, 232, 223, 322, 123, 222, 231, 322, 233, 122, 223, 232, 232, 222, 223, 232, 232, 222, 232, 132, 123, 212]
+            animationDelay: function (idx) { // 动画延迟
+                // 越往后的数据延迟越大
+                return idx * 0;
+            },
+            data: []
 
         }]
     };
 
+
+
     // 使用刚指定的配置项和数据显示图表。
     myChart.setOption(option);
+    myChart.showLoading(); // 数据加载动画
+    /*myChart.setOption({
+        xAxis: {
+            data: timeData
+        },
+        series: [{
+            // 根据名字对应到相应的系列
+            name: '币值',
+            animation: true,
+            animationEasing: 'linear',
+            data: [113, 132, 123, 122, 132, 132, 123, 225, 223, 232, 223, 222, 223, 312, 223, 222, 223, 222, 232, 262, 232, 232, 223, 222, 223, 332, 223, 232, 223, 322, 123, 222, 231, 322, 233, 122, 223, 232, 232, 222, 223, 232, 232, 222, 232, 132, 123, 212]
+        }]
+    });*/
+    // 获取数据
+    /*$.ajax({
+        url: "data.json",
+        type:"get",
+        data: {},
+        dataType: "json",
+        success: function(data){
+          // 拿到数据重新setoption
+            myChart.setOption({
+            /!*xAxis: {
+                data: data.list2
+            },*!/
+            /!*yAxis: [{
+                  min: mind,
+                  max: maxd,
+                  interval: ava1
+              },{
+                  min: mind3,
+                  max: maxd3,
+                  interval: ava2
+              }],*!/
+                series: [{
+                    name: '币值',
+                    data: data.seriesData
+                }]
+          })
+        }
+    })*/
+    // 异步加载数据
+    $.get('data.json').done(function (data) {
+
+
+        // 填入数据
+        myChart.setOption( {
+
+            xAxis: {
+                data: timeData
+            },
+            series: [{
+                // 根据名字对应到相应的系列
+                name: '销量',
+                data: data.seriesData
+            }],
+        });
+
+    });
+    var time ;
+    myChart.on('rendered', function () { // 渲染结束事件
+       time = setTimeout(function () {
+           myChart.hideLoading(); // 隐藏数据加载动画
+       },350)
+
+    });
+
 </script>
 </body>
 </html>
